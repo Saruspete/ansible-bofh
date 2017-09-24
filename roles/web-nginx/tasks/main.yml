@@ -1,0 +1,79 @@
+---
+
+#
+# Configure system
+#
+
+- block:
+    - name: Package - Install EPEL
+      package: name=epel-release state=present
+    - name: Package - Install selinux-python
+      package: name=libselinux-python state=present
+  when: ansible_os_family == "RedHat"
+
+# Install packages
+- name: Package - Install nginx
+  package: name=nginx state=present update_cache=yes
+
+# Fix user
+#- name: Accounts - nginx
+#  user: nginx
+
+
+- name: Config - nginx.conf
+  template: src={{ item }} dest=/etc/nginx/nginx.conf
+  with_first_found:
+    - files:
+      - nginx.conf.{{ inventory_hostname }}.j2
+      - nginx.conf.j2
+    - paths:
+      - ../templates
+  notify: restart nginx
+
+- name: Crypto - DH Param - Generate
+  # https://security.stackexchange.com/questions/95178/diffie-hellman-parameters-still-calculating-after-24-hours
+  command: openssl dhparam -dsaparam -out /etc/nginx/dhparam.pem 4096 creates=/etc/nginx/dhparam.pem
+
+- name: Crypto - DH Param - Fix perms
+  file:
+    path: /etc/nginx/dhparam.pem
+    owner: "{{ data_user }}"
+    group: "{{ data_group }}"
+
+
+- name: Folders - Create default virtalhost
+  file: path={{ data_dir }}/default state=directory
+
+- name: Folders - Find all virtualhosts
+  find:
+    paths: "{{ data_dir }}"
+    file_type: directory
+  register: vhosts
+
+# Create virtualhost structure
+- name: Folders - Create hierarchy of virtualhost
+  file:
+    path: "{{ item.0.path }}/{{ item.1 }}"
+    state: directory
+    mode: 0755
+    owner: "{{ data_user }}"
+    group: "{{ data_group }}"
+  with_nested:
+    - "{{ vhosts.files }}"
+    - [ 'bin', 
+        'conf', 'conf/nginx',
+        'cron', 
+        'html', 'html/public', 
+        'logs', 'logs/nginx',
+        'priv',
+        'temp', 'temp/temp', 'temp/nginx', 'temp/upload', 'temp/session' ]
+
+- name: Config - nginx.sub.conf
+  template: src=../templates/nginx.sub.conf.j2 dest={{ item.path }}/conf/nginx.conf
+  with_items:
+    - "{{ vhosts.files }}"
+
+
+- name: start the nginx service
+  service: name=nginx state=started enabled=yes
+

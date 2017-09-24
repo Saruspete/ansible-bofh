@@ -1,0 +1,28 @@
+server {
+	listen			0.0.0.0:80	default_server;
+
+	server_name		{{ item.path | basename }};
+
+	#
+	# Log management
+	#
+	access_log		{{ item.path }}/logs/nginx/access.log main;
+	error_log		{{ item.path }}/logs/nginx/error.log debug;
+
+	#
+	# root configuration
+	#
+	root			{{ item.path}}/html/public;
+	include			{{ item.path}}/conf/nginx/*.conf;
+
+	index			index.html index.htm index.php;
+
+	location = /favicon.ico {
+		log_not_found	off;
+		access_log		off;
+	}
+
+	location ~ /\.ht {
+		deny all;
+	}
+}

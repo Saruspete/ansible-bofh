@@ -1,0 +1,6 @@
+---
+
+data_dir: "/home/www"
+data_user:   "nginx"
+data_group:  "nginx"
+
