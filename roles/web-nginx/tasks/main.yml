@@ -68,10 +68,18 @@
         'priv',
         'temp', 'temp/temp', 'temp/nginx', 'temp/upload', 'temp/session' ]
 
+#- name: Crypto - Request Certificate
+
 - name: Config - nginx.sub.conf
   template: src=../templates/nginx.sub.conf.j2 dest={{ item.path }}/conf/nginx.conf
   with_items:
     - "{{ vhosts.files }}"
+
+- name: Config - nginx.sub.common.conf
+  template: src=../templates/nginx.sub.common.conf.j2 dest={{ item.path }}/conf/nginx.common.conf
+  with_items:
+    - "{{ vhosts.files }}"
+
 
 
 - name: start the nginx service

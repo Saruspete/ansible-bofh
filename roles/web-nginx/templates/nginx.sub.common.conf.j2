@@ -1,0 +1,16 @@
+#
+# root configuration
+#
+root            {{ item.path }}/html/public;
+include         {{ item.path }}/conf/nginx/*.conf;
+
+index           index.html index.htm index.php;
+
+location = /favicon.ico {
+	log_not_found   off;
+	access_log      off;
+}
+
+location ~ /\.ht {
+	deny all;
+}

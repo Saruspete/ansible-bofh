@@ -1,28 +1,39 @@
 server {
-	listen			0.0.0.0:80	default_server;
-
-	server_name		{{ item.path | basename }};
+	listen              0.0.0.0:80;
+	server_name         {{ item.path | webfolder2domain }};
 
 	#
 	# Log management
 	#
-	access_log		{{ item.path }}/logs/nginx/access.log main;
-	error_log		{{ item.path }}/logs/nginx/error.log debug;
+	access_log          {{ item.path }}/logs/nginx/access.http.log main;
+	error_log           {{ item.path }}/logs/nginx/error.http.log debug;
 
 	#
 	# root configuration
 	#
-	root			{{ item.path}}/html/public;
-	include			{{ item.path}}/conf/nginx/*.conf;
+	include             {{ item.path}}/conf/nginx.common.conf;
 
-	index			index.html index.htm index.php;
+}
 
-	location = /favicon.ico {
-		log_not_found	off;
-		access_log		off;
-	}
+server {
+	listen              0.0.0.0:443 ssl;
+	server_name         {{ item.path | webfolder2domain }};
 
-	location ~ /\.ht {
-		deny all;
-	}
+	#
+	# SSL Configuration
+	#
+	ssl_certificate     {{ item.path }}/priv/cert.pem;
+	ssl_certificate_key {{ item.path }}/priv/privkey.pem;
+
+	#
+	# Log management
+	#
+	access_log          {{ item.path }}/logs/nginx/access.https.log main;
+	error_log           {{ item.path }}/logs/nginx/error.https.log debug;
+
+	#
+	# Common configuration
+	#
+	include             {{ item.path }}/conf/nginx.common.conf;
+
 }
