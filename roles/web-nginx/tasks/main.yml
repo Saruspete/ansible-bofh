@@ -20,6 +20,10 @@
 #  user: nginx
 
 
+#
+# Configure nginx
+#
+
 - name: Config - nginx.conf
   template: src={{ item }} dest=/etc/nginx/nginx.conf
   with_first_found:
@@ -30,6 +34,10 @@
       - ../templates
   notify: restart nginx
 
+
+#
+# Crypto related
+#
 - name: Crypto - DH Param - Generate
   # https://security.stackexchange.com/questions/95178/diffie-hellman-parameters-still-calculating-after-24-hours
   command: openssl dhparam -dsaparam -out /etc/nginx/dhparam.pem 4096 creates=/etc/nginx/dhparam.pem
@@ -40,6 +48,10 @@
     owner: "{{ data_user }}"
     group: "{{ data_group }}"
 
+
+#
+# Folder structure
+#
 
 - name: Folders - Create default virtalhost
   file: path={{ data_dir }}/default state=directory
@@ -70,17 +82,33 @@
 
 #- name: Crypto - Request Certificate
 
+- name: Crypto - Check if certificate exists
+  stat: path={{ item.path }}/priv/privkey.pem
+  with_items: "{{ vhosts.files }}"
+  register: ssl_certificates
+
+- set_fact:
+    domains_certificates: []
+- name: Ansible - Set list of valid certificates
+  set_fact:
+    domains_certificates: "{{ domains_certificates }} + [ '{{ item.item.path }}' ]"
+  when:
+    - item.stat.exists == true
+  with_items: "{{ ssl_certificates.results }}"
+
 - name: Config - nginx.sub.conf
   template: src=../templates/nginx.sub.conf.j2 dest={{ item.path }}/conf/nginx.conf
-  with_items:
-    - "{{ vhosts.files }}"
+  with_items: "{{ vhosts.files }}"
 
 - name: Config - nginx.sub.common.conf
   template: src=../templates/nginx.sub.common.conf.j2 dest={{ item.path }}/conf/nginx.common.conf
-  with_items:
-    - "{{ vhosts.files }}"
+  with_items: "{{ vhosts.files }}"
 
 
+
+#
+# Services
+#
 
 - name: start the nginx service
   service: name=nginx state=started enabled=yes

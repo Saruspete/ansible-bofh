@@ -1,6 +1,8 @@
+{% set domain_current = item.path | webfolder2domain %}
+{% set domain_hashttps = '1' if item.path in domains_certificates else '0' %}
 server {
 	listen              0.0.0.0:80;
-	server_name         {{ item.path | webfolder2domain }};
+	server_name         {{ domain_current }};
 
 	#
 	# Log management
@@ -9,15 +11,20 @@ server {
 	error_log           {{ item.path }}/logs/nginx/error.http.log debug;
 
 	#
-	# root configuration
+	# Common configuration
 	#
+{% if domain_hashttps and domain_current not in domain_allowhttp %}
+	return              301 https://$host$request_uri;
+{% else %}
 	include             {{ item.path}}/conf/nginx.common.conf;
+{% endif %}
 
 }
 
+{% if domain_hashttps | bool %}
 server {
 	listen              0.0.0.0:443 ssl;
-	server_name         {{ item.path | webfolder2domain }};
+	server_name         {{ domain_current }};
 
 	#
 	# SSL Configuration
@@ -37,3 +44,4 @@ server {
 	include             {{ item.path }}/conf/nginx.common.conf;
 
 }
+{% endif %}
