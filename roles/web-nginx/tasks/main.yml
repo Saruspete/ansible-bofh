@@ -13,7 +13,7 @@
 
 # Install packages
 - name: Package - Install nginx
-  package: name=nginx state=present update_cache=yes
+  package: name=nginx state=present
 
 # Fix user
 #- name: Accounts - nginx
