@@ -8,7 +8,7 @@ server {
 	# Log management
 	#
 	access_log          {{ item.path }}/logs/nginx/access.http.log main;
-	error_log           {{ item.path }}/logs/nginx/error.http.log debug;
+	error_log           {{ item.path }}/logs/nginx/error.http.log;
 
 	#
 	# Common configuration
@@ -36,7 +36,7 @@ server {
 	# Log management
 	#
 	access_log          {{ item.path }}/logs/nginx/access.https.log main;
-	error_log           {{ item.path }}/logs/nginx/error.https.log debug;
+	error_log           {{ item.path }}/logs/nginx/error.https.log;
 
 	#
 	# Common configuration
