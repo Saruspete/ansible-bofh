@@ -10,10 +10,12 @@
     - name: Package - Install selinux-python
       package: name=libselinux-python state=present
   when: ansible_os_family == "RedHat"
+  tags: ['package']
 
 # Install packages
 - name: Package - Install nginx
   package: name=nginx state=present
+  tags: ['package']
 
 # Fix user
 #- name: Accounts - nginx
@@ -33,6 +35,7 @@
     - paths:
       - ../templates
   notify: restart nginx
+  tags: ['config']
 
 
 #
@@ -41,12 +44,14 @@
 - name: Crypto - DH Param - Generate
   # https://security.stackexchange.com/questions/95178/diffie-hellman-parameters-still-calculating-after-24-hours
   command: openssl dhparam -dsaparam -out /etc/nginx/dhparam.pem 4096 creates=/etc/nginx/dhparam.pem
+  tags: ['config','crypto']
 
 - name: Crypto - DH Param - Fix perms
   file:
     path: /etc/nginx/dhparam.pem
     owner: "{{ data_user }}"
     group: "{{ data_group }}"
+  tags: ['config','crypto']
 
 
 #
@@ -55,12 +60,14 @@
 
 - name: Folders - Create default virtalhost
   file: path={{ data_dir }}/default state=directory
+  tags: ['folders']
 
 - name: Folders - Find all virtualhosts
   find:
     paths: "{{ data_dir }}"
     file_type: directory
   register: vhosts
+  tags: ['always']
 
 # Create virtualhost structure
 - name: Folders - Create hierarchy of virtualhost
@@ -79,22 +86,47 @@
         'logs', 'logs/nginx',
         'priv',
         'temp', 'temp/temp', 'temp/nginx', 'temp/upload', 'temp/session' ]
+  tags: ['folders']
 
-#- name: Crypto - Request Certificate
+#
+# Manage https certificates
+#
 
+# Use letsencrypt free certs
+- name: Crypto - Request Certificate
+  include_role: name=pki-letsencrypt
+  vars:
+    letsencrypt_webroot_path: "{{ domain.path }}/html/public"
+    letsencrypt_cert_domains: 
+      - "{{ domain.path | webfolder2domain }}"
+  with_items:
+    "{{ vhosts.files }}"
+  when: domain != "default"
+  loop_control:
+    loop_var: domain
+  tags: ['crypto']
+
+# Check if certificates exists
 - name: Crypto - Check if certificate exists
   stat: path={{ item.path }}/priv/privkey.pem
   with_items: "{{ vhosts.files }}"
   register: ssl_certificates
+  tags: ['crypto']
 
 - set_fact:
     domains_certificates: []
+  tags: ['always']
 - name: Ansible - Set list of valid certificates
   set_fact:
     domains_certificates: "{{ domains_certificates }} + [ '{{ item.item.path }}' ]"
   when:
     - item.stat.exists == true
   with_items: "{{ ssl_certificates.results }}"
+  tags: ['always']
+
+#
+# Deploy configuration
+#
 
 - name: Config - nginx.sub.conf
   template: src=../templates/nginx.sub.conf.j2 dest={{ item.path }}/conf/nginx.conf
