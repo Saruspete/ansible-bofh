@@ -1,0 +1,20 @@
+Available vars and values
+
+ansible_distribution:
+
+
+ansible_os_family:
+Values:
+  RedHat  (RedHat, Fedora, CentOS, Scientific, SLC, Ascendos, CloudLinux, PSBM, OracleLinux, OVS, OEL, Amazon, XenServer)
+  Debian  (Debian, Ubuntu)
+  Suse    (SLES, SLED, OpenSuSE, SuSE)
+  Gentoo
+  Archlinux
+  Mandrake (Mandrake, Mandriva)
+  Solaris  (Solaris, Nexenta, OmniOS, OpenIndiana, SmartOS)
+  AIX
+  Alpine
+  Darwin
+  FreeBSD
+  HP-UX
+
