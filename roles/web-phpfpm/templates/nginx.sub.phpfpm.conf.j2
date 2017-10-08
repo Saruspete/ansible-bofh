@@ -1,0 +1,8 @@
+
+location ~ \.php$ {
+	fastcgi_pass	unix:{{ item.path }}/priv/phpfpm.sock;
+	try_files		$uri =404;
+	fastcgi_index	index.php;
+	include			fastcgi.conf;
+}
+
