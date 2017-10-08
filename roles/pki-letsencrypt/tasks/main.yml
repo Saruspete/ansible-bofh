@@ -1,0 +1,50 @@
+---
+
+- set_fact:                                                             
+    ansible_distro: "{{ ansible_distribution|lower|replace('\"', '') }}"
+  tags: ['always']
+
+- include_vars: "{{ item }}"
+  with_first_found:
+    - files:                                                                    
+      - "{{ ansible_distro }}-{{ ansible_distribution_version|lower|replace('/', '_') }}.yml"
+      - "{{ ansible_distro }}-{{ ansible_distribution_release }}.yml"           
+      - "{{ ansible_distro }}-{{ ansible_distribution_major_version|lower|replace('/', '_') }}.yml"
+      - "{{ ansible_distro }}.yml"                                              
+      - "{{ ansible_distribution }}-{{ ansible_distribution_major_version | int}}.yml"
+      - "{{ ansible_distribution }}.yml"                                        
+      - "{{ ansible_os_family }}.yml"                                           
+      - "{{ ansible_os_family|lower }}.yml"                                     
+      - "default.yml"                                                           
+    - paths:                                                                    
+      - ../vars                                                                 
+#  loop_control:
+#    loop_var: include_file
+  tags: ['always']
+
+# Not all OS need a specific processing
+#- name: Ansible - Include OS-specific tasks
+#  include_tasks: "{{ ansible_os_family }}.yml"
+#  ignore_errors: yes
+#  tags: ['always']
+
+
+# Install required packages
+- name: Package - Install Certbot
+  package: name={{item}} state=present
+  with_items: "{{letsencrypt_packages}}"
+  become: yes
+  tags: ['package']
+
+# Request certificate using http
+- name: API - Request certificate with HTTP
+  command: "{{ letsencrypt_command }} -a webroot --webroot-path {{ letsencrypt_webroot_path }} certonly"
+  become: yes
+  args:
+    creates: "/etc/letsencrypt/live/{{ letsencrypt_cert_domains[0] }}"
+  when: letsencrypt_authenticator == "webroot"
+  ignore_errors: True
+
+
+
+

@@ -1,0 +1,5 @@
+---
+
+letsencrypt_packages: "app-crypt/certbot-nginx"
+
+openssl_packages: "openssl"
