@@ -49,8 +49,8 @@
 - name: Crypto - DH Param - Fix perms
   file:
     path: /etc/nginx/dhparam.pem
-    owner: "{{ data_user }}"
-    group: "{{ data_group }}"
+    owner: "{{ http_data_user }}"
+    group: "{{ http_data_group }}"
   tags: ['config','crypto']
 
 
@@ -64,7 +64,7 @@
 
 - name: Folders - Find all virtualhosts
   find:
-    paths: "{{ data_dir }}"
+    paths: "{{ http_data_dir }}"
     file_type: directory
   register: vhosts
   tags: ['always']
@@ -74,9 +74,9 @@
   file:
     path: "{{ item.0.path }}/{{ item.1 }}"
     state: directory
-    mode: 0755
-    owner: "{{ data_user }}"
-    group: "{{ data_group }}"
+    mode: 0750
+    owner: "{{ http_data_user }}"
+    group: "{{ http_data_group }}"
   with_nested:
     - "{{ vhosts.files }}"
     - [ 'bin', 
@@ -131,10 +131,12 @@
 - name: Config - nginx.sub.conf
   template: src=../templates/nginx.sub.conf.j2 dest={{ item.path }}/conf/nginx.conf
   with_items: "{{ vhosts.files }}"
+  notify: restart nging
 
 - name: Config - nginx.sub.common.conf
   template: src=../templates/nginx.sub.common.conf.j2 dest={{ item.path }}/conf/nginx.common.conf
   with_items: "{{ vhosts.files }}"
+  notify: restart nging
 
 
 
