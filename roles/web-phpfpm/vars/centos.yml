@@ -28,7 +28,7 @@ phpfpm_packages_extra:
   - php-pecl-libsodium2
   - php-pecl-inotify
   - php-pecl-gnupg
-  - php-pecl-geoip 
+  - php-pecl-geoip
   - php-lz4
   - php-ldap
   - php-bcmath

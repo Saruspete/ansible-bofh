@@ -4,13 +4,13 @@
 listen = {{ item.path }}/priv/phpfpm.sock
 
 listen.allowed_clients = 127.0.0.1
-listen.owner = {{ data_user }}
-listen.group = {{ data_group }}
+listen.owner = {{ http_data_user }}
+listen.group = {{ http_data_group }}
 listen.mode = 0660
 
 ; Unix user/group of processes
-user = {{ data_user }}
-group = {{ data_group }}
+user = {{ http_data_user }}
+group = {{ http_data_group }}
 
 pm = dynamic
 pm.max_children = 50
