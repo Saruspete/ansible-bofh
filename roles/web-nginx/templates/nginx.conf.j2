@@ -1,6 +1,6 @@
 #{{ ansible_managed }}
 
-user              {{ data_user }} {{ data_group }};
+user              {{ http_data_user }} {{ http_data_group }};
 worker_processes  auto;
 
 error_log         /var/log/nginx/error.log;
@@ -67,6 +67,6 @@ http {
 	add_header                  X-Robots-Tag none; 
 
 	index                       index.html;
-	include                     {{ data_dir }}/*/conf/nginx.conf;
+	include                     {{ http_data_dir }}/*/conf/nginx.conf;
 
 }

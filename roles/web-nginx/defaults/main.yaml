@@ -1,8 +1,8 @@
 ---
 
-data_dir: "/home/www"
-data_user:   "nginx"
-data_group:  "nginx"
+http_data_dir: "/home/www"
+http_data_user:   "nginx"
+http_data_group:  "nginx"
 
-domain_allowhttp:
+http_domain_allowhttp:
   - default
