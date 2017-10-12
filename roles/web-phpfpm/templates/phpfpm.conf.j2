@@ -1,0 +1,38 @@
+; vim: ft=cfg
+
+;;;;;;;;;;;;;;;;;;;;;
+; FPM Configuration ;
+;;;;;;;;;;;;;;;;;;;;;
+
+; All relative paths in this configuration file are relative to PHP's install
+; prefix.
+
+;include = /etc/php-fpm.d/*.conf
+include = {{ http_data_dir }}/*/conf/phpfpm.conf
+
+;;;;;;;;;;;;;;;;;;
+; Global Options ;
+;;;;;;;;;;;;;;;;;;
+
+[global]
+pid = /run/php-fpm/php-fpm.pid
+
+error_log = /var/log/php-fpm/error.log
+
+;syslog.facility = daemon
+;syslog.ident = php-fpm
+
+; Possible Values: alert, error, warning, notice, debug
+;log_level = notice
+
+
+;process.max = 128
+;process.priority = -19
+
+daemonize = yes
+
+;rlimit_files = 1024
+;rlimit_core = 0
+
+
+
