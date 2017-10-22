@@ -58,9 +58,9 @@
 # Folder structure
 #
 
-- name: Folders - Create default virtalhost
-  file: path={{ http_data_dir }}/default state=directory
-  tags: ['folders']
+#- name: Folders - Create default virtalhost
+#  file: path={{ http_data_dir }}/default state=directory
+#  tags: ['folders']
 
 - name: Folders - Find all virtualhosts
   find:
@@ -77,6 +77,7 @@
     mode: 0750
     owner: "{{ http_data_user }}"
     group: "{{ http_data_group }}"
+    unsafe_writes: yes
   with_nested:
     - "{{ vhosts.files }}"
     - [ 'bin', 
@@ -105,6 +106,15 @@
   loop_control:
     loop_var: domain
   tags: ['crypto']
+
+- name: Crypto - Create links to priv folder
+  file:
+    state: link
+    src: "/etc/letsencrypt/live/{{ item.0.path | webfolder2domain }}/{{ item.1 }}"
+    path: "{{ item.0.path }}/priv/{{ item.1 }}"
+  with_nested:
+    - "{{ vhosts.files }}"
+    - [ 'cert.pem', 'chain.pem', 'fullchain.pem', 'privkey.pem' ]
 
 # Check if certificates exists
 - name: Crypto - Check if certificate exists
