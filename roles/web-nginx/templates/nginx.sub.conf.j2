@@ -13,10 +13,10 @@ server {
 	#
 	# Common configuration
 	#
-{% if domain_hashttps and domain_current not in domain_allowhttp %}
+{% if domain_hashttps | bool and domain_current not in http_domain_allowhttp %}
 	return              301 https://$host$request_uri;
 {% else %}
-	include             {{ item.path}}/conf/nginx.common.conf;
+	include             {{ item.path }}/conf/nginx.common.conf;
 {% endif %}
 
 }
