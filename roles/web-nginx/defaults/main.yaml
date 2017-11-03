@@ -1,5 +1,7 @@
 ---
 
+certbot_live_dir: /etc/letsencrypt/live
+
 http_data_dir: "/home/www"
 http_data_user:   "nginx"
 http_data_group:  "nginx"

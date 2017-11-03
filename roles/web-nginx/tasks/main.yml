@@ -89,6 +89,17 @@
         'temp', 'temp/temp', 'temp/nginx', 'temp/upload', 'temp/session' ]
   tags: ['folders']
 
+
+#
+# Setup base config
+#
+- name: Config - Generate domain-config
+  include: genconfig.yml
+
+# And execute handlers if needed
+- name: Ansible - Execute handlers to restart nginx now if needed
+  meta: flush_handlers
+
 #
 # Manage https certificates
 #
@@ -107,47 +118,29 @@
     loop_var: domain
   tags: ['crypto']
 
+- name: Crypto - List letsencrypt certificates
+  find:
+    paths: "{{ certbot_live_dir }}"
+    file_type: directory
+  register: letsencrypt_domains
+  tags: ['crypto']
+
 - name: Crypto - Create links to priv folder
   file:
     state: link
-    src: "/etc/letsencrypt/live/{{ item.0.path | webfolder2domain }}/{{ item.1 }}"
-    path: "{{ item.0.path }}/priv/{{ item.1 }}"
+    src: "{{ item.0.path }}/{{ item.1 }}"
+    path: "{{ http_data_dir }}/{{ item.0.path | webfolder2domain }}/priv/{{ item.1 }}"
   with_nested:
-    - "{{ vhosts.files }}"
+    - "{{ letsencrypt_domains.files }}"
     - [ 'cert.pem', 'chain.pem', 'fullchain.pem', 'privkey.pem' ]
-
-# Check if certificates exists
-- name: Crypto - Check if certificate exists
-  stat: path={{ item.path }}/priv/privkey.pem
-  with_items: "{{ vhosts.files }}"
-  register: ssl_certificates
   tags: ['crypto']
 
-- set_fact:
-    domains_certificates: []
-  tags: ['always']
-- name: Ansible - Set list of valid certificates
-  set_fact:
-    domains_certificates: "{{ domains_certificates }} + [ '{{ item.item.path }}' ]"
-  when:
-    - item.stat.exists == true
-  with_items: "{{ ssl_certificates.results }}"
-  tags: ['always']
-
 #
-# Deploy configuration
+# Re-deploy configuration if new certs
 #
 
-- name: Config - nginx.sub.conf
-  template: src=../templates/nginx.sub.conf.j2 dest={{ item.path }}/conf/nginx.conf
-  with_items: "{{ vhosts.files }}"
-  notify: restart nginx
-
-- name: Config - nginx.sub.common.conf
-  template: src=../templates/nginx.sub.common.conf.j2 dest={{ item.path }}/conf/nginx.common.conf
-  with_items: "{{ vhosts.files }}"
-  notify: restart nginx
-
+- name: Config - Generate domain-config
+  include: genconfig.yml
 
 
 #

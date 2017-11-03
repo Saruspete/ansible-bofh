@@ -1,0 +1,34 @@
+---
+
+# Check if certificates exists
+- name: Crypto - Check if certificate exists
+  stat: path={{ item.path }}/priv/privkey.pem
+  with_items: "{{ vhosts.files }}"
+  register: ssl_certificates
+  tags: ['crypto']
+
+- set_fact:
+    domains_certificates: []
+  tags: ['always']
+- name: Ansible - Set list of valid certificates
+  set_fact:
+    domains_certificates: "{{ domains_certificates }} + [ '{{ item.item.path }}' ]"
+  when:
+    - item.stat.exists == true
+  with_items: "{{ ssl_certificates.results }}"
+  tags: ['always']
+
+#
+# Deploy configuration
+#
+
+- name: Config - nginx.sub.conf
+  template: src=../templates/nginx.sub.conf.j2 dest={{ item.path }}/conf/nginx.conf
+  with_items: "{{ vhosts.files }}"
+  notify: restart nginx
+
+- name: Config - nginx.sub.common.conf
+  template: src=../templates/nginx.sub.common.conf.j2 dest={{ item.path }}/conf/nginx.common.conf
+  with_items: "{{ vhosts.files }}"
+  notify: restart nginx
+
