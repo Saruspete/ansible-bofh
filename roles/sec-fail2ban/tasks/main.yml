@@ -1,0 +1,71 @@
+---
+
+- name: Ansible - call init
+  include: init.yml
+  static: true
+
+#
+# Packages
+#
+- name: Package - Install packages
+  include: package.yml
+  static: true
+
+#
+# Configuration
+#
+- name: Config - Jail 20 minutes
+  ini_file: path={{ f2b_jail_file }} section=DEFAULT option=bantime value=1200
+
+- name: Config - Jail search 1 day
+  ini_file: path={{ f2b_jail_file }} section=DEFAULT option=findtime value=86400
+  
+- name: Config - Jail retry 5 times
+  ini_file: path={{ f2b_jail_file }} section=DEFAULT option=maxretry value=5
+  
+
+- name: Config - Enable SSH Monitoring
+  ini_file: path={{ f2b_jail_file }} section=sshd option=enabled value=true
+
+
+# Fail loop
+- name: Config - Increased bantime for repeated fails
+  template: src=../templates/f2b-loop.conf dest={{ f2b_filter_dir }}/f2b-loop.conf
+
+- name: Config - Increased bantime for repeated fails loops
+  blockinfile: 
+    path: "{{ f2b_jail_file }}"
+    block: |
+      [f2b-loop2]
+      enabled = true
+      filter = f2b-loop
+      bantime = 86400 ;1 day
+      findtime = 604800 ;1 week
+      logpath = {{ f2b_log_file }}
+      maxretry = 2
+      
+      [f2b-loop3]
+      enabled = true
+      filter = f2b-loop
+      bantime	= 604800 ;1 week
+      findtime = 2592000 ;1 month
+      logpath = {{ f2b_log_file }}
+      maxretry = 3
+      
+      [f2b-loop4]
+      enabled = true
+      filter = f2b-loop
+      bantime = 2592000 ;1 month
+      findtime = 15552000 ;6 months
+      logpath = {{ f2b_log_file }}
+      maxretry = 6
+      
+      [f2b-loop5]
+      enabled = true
+      filter = f2b-loop
+      bantime = 15552000 ;6 months
+      findtime = 31536000 ;1 year
+      logpath = {{ f2b_log_file }}
+      maxretry = 9
+
+

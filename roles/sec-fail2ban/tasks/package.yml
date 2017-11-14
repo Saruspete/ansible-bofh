@@ -1,0 +1,5 @@
+---
+
+- name: Package - Install fail2ban
+  package: name={{ item }} state=installed
+  with_items: "{{ f2b_pkg_list }}"

@@ -1,0 +1,10 @@
+---
+
+f2b_log_file: "/var/log/fail2ban.log"
+f2b_jail_file: "/etc/fail2ban/jail.local"
+f2b_filter_dir: "/etc/fail2ban/filter.d"
+
+f2b_pkg_list:
+  - fail2ban
+
+
