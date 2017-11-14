@@ -1,4 +1,4 @@
-; Start a new pool
+; {{ ansible_managed }}
 ; vim: ft=cfg
 [{{ item.path | basename}}]
 listen = {{ item.path }}/priv/phpfpm.sock

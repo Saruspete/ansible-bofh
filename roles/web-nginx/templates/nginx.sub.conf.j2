@@ -1,3 +1,4 @@
+# {{ ansible_managed }}
 {% set domain_current = item.path | webfolder2domain %}
 {% set domain_hashttps = '1' if item.path in domains_certificates else '0' %}
 server {
