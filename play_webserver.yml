@@ -1,0 +1,11 @@
+---
+
+- hosts: svc-ssh
+  roles:
+    - sec-fail2ban
+
+- hosts: svc-http
+  roles:
+#    - web-admin
+    - web-nginx
+    - web-phpfpm

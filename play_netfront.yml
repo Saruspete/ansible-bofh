@@ -1,0 +1,6 @@
+---
+
+- hosts: svc-ssh
+  roles:
+    - sec-fail2ban
+
