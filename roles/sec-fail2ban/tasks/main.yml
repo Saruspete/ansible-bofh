@@ -27,6 +27,11 @@
 - name: Config - Enable SSH Monitoring
   ini_file: path={{ f2b_jail_file }} section=sshd option=enabled value=true
 
+- name: Config - Remove firewallcmd to fallback to iptables
+  file:
+    path: "{{ f2b_jail_dir }}/00-firewalld.conf"
+    state: absent
+
 
 # Fail loop
 - name: Config - Increased bantime for repeated fails

@@ -1,0 +1,5 @@
+---
+
+- name: fail2ban restart
+  server: name={{ f2b_svc_name }} state=restarted
+
