@@ -17,19 +17,19 @@ phpfpm_packages_graphic:
   - php-gd
 
 phpfpm_packages_extra:
-  - php-smbclient
-  - php-phalcon3
+#  - php-smbclient
+#  - php-phalcon3
   - php-phpiredis
   - php-pecl-uuid
   - php-pecl-ssh2
-  - php-pecl-scrypt
-  - php-pecl-protobuf
-  - php-pecl-pdflib
-  - php-pecl-libsodium2
-  - php-pecl-inotify
-  - php-pecl-gnupg
+#  - php-pecl-scrypt
+#  - php-pecl-protobuf
+#  - php-pecl-pdflib
+#  - php-pecl-libsodium2
+#  - php-pecl-inotify
+#  - php-pecl-gnupg
   - php-pecl-geoip
-  - php-lz4
+#  - php-lz4
   - php-ldap
   - php-bcmath
 

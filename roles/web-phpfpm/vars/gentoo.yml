@@ -1,35 +1,66 @@
 ---
 
 phpfpm_packages_base:
-  - php-fpm
-  - php-cli
-  - php-json
-  - php-opcache
-  - php-mysqlnd
-  - php-mcrypt
-  - php-mbstring
-  - php-pdo
-  - php-pecl-zip
-  - php-pecl-yaml
+  - dev-lang/php
 
-phpfpm_packages_graphic:
-  - php-pecl-imagick
-  - php-gd
+phpfpm_packages_gentoouse:
+  # Core features
+  - fpm
+  - cli
+  - opcache
+  - threads
+  - posix
+  - pcntl
+  # Compression
+  - bzip2
+  - zip
+  - zlib
+  - phar
+  # main features
+  - calendar
+  - crypt
+  - ftp
+  - sockets
+  - readline
+  - session
+  - curl
+  # Multibytes strings
+  - unicode
+  - mcrypt
+  - mbstring
+  - iconv
+  # database
+  - mysql
+  - mysqli
+  - pdo
+  - sqlite
+  # Format input output
+  - json
+  - xml
+  - simplexml
+  - soap
+  - xmlreader
+  - xmlwriter
+  - xslt
+  - inifile
+  # Imaging
+  - gd
+  - exif
 
 phpfpm_packages_extra:
-  - php-smbclient
-  - php-phalcon3
+#  - php-smbclient
+#  - php-phalcon3
   - php-phpiredis
   - php-pecl-uuid
   - php-pecl-ssh2
-  - php-pecl-scrypt
-  - php-pecl-protobuf
-  - php-pecl-pdflib
-  - php-pecl-libsodium2
-  - php-pecl-inotify
-  - php-pecl-gnupg
+#  - php-pecl-scrypt
+#  - php-pecl-protobuf
+#  - php-pecl-pdflib
+#  - php-pecl-libsodium2
+#  - php-pecl-inotify
+#  - php-pecl-gnupg
   - php-pecl-geoip
-  - php-lz4
+#  - php-lz4
   - php-ldap
   - php-bcmath
 

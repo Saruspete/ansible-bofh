@@ -1,0 +1,73 @@
+---
+
+- name: Ansible - Call 
+  include: init.yml
+  static: yes
+
+- name: Package - Install base packages
+  package: name={{ item }} state=present
+  with_items: "{{ phpfpm_packages_base }}"
+  tags: ['package']
+
+- name: Package - Install extra modules
+  package: name={{ item }} state=present
+  with_items: "{{ phpfpm_packages_extra }}"
+
+
+- name: Folders - Find all virtualhosts
+  find:
+    paths: "{{ http_data_dir }}"
+    file_type: directory
+  register: vhosts
+  tags: ['always']
+
+#
+# Create structure
+#
+- name: Folders - Create hierarchy for phpfpm
+  tags: ['folders']
+  file:
+    path: "{{ item.0.path }}/{{ item.1 }}"
+    state: directory
+    mode: 0750
+    owner: "{{ http_data_user }}"
+    group: "{{ http_data_group }}"
+  with_nested:
+    - "{{ vhosts.files }}"
+    - [ 'conf/phpfpm',
+        'logs/phpfpm',
+        'temp/phpfpm' ]
+
+#
+# Configure FPM
+#
+- name: Config - phpfpm.conf
+  tags: ['config']
+  template: src={{ item }} dest=/etc/php-fpm.conf
+  with_first_found:
+  - files:
+    - phpfpm.conf.{{ inventory_hostname }}.j2
+    - phpfpm.conf.{{ ansible_distro }}.j2
+    - phpfpm.conf.j2
+  - paths:
+    - ../templates
+  notify: restart phpfpm
+
+# Configure nginx
+- name: Config - nginx.sub.phpfpm.conf
+  tags: ['config']
+  template: src=../templates/nginx.sub.phpfpm.conf.j2 dest={{ item.path }}/conf/nginx/phpfpm.conf
+  with_items: "{{ vhosts.files }}"
+  notify: restart nginx
+
+- name: Config - phpfpm.sub.conf
+  tags: ['config']
+  template: src=../templates/phpfpm.sub.conf.j2 dest={{ item.path }}/conf/phpfpm.conf
+  with_items: "{{ vhosts.files }}"
+  notify: restart phpfpm
+
+#
+# Start Service
+#
+- name: Service - Enable php-fpm
+  service: name=php-fpm state=started enabled=yes
