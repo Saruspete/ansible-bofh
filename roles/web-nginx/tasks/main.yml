@@ -58,6 +58,14 @@
 # Folder structure
 #
 
+- name: Folders - Create base folders
+  file: 
+    path: "{{ http_data_dir }}"
+    state: directory
+    mode: 0750
+    owner: "{{ http_data_user }}"
+    group: "{{ http_data_group }}"
+
 #- name: Folders - Create default virtalhost
 #  file: path={{ http_data_dir }}/default state=directory
 #  tags: ['folders']
