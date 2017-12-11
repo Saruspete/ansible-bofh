@@ -30,7 +30,7 @@ server {
 	#
 	# SSL Configuration
 	#
-	ssl_certificate     {{ item.path }}/priv/cert.pem;
+	ssl_certificate     {{ item.path }}/priv/fullchain.pem;
 	ssl_certificate_key {{ item.path }}/priv/privkey.pem;
 
 	#
