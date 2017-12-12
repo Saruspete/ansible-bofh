@@ -1,5 +1,10 @@
 ---
 
+phpfpm_conf_base: /etc/php/fpm-php7.1
+phpfpm_conf_file_main: "{{ phpfpm_conf_base }}/php-fpm.conf"
+
+phpfpm_run_file: /run/php-fpm.pid
+
 phpfpm_packages_base:
   - dev-lang/php
 
@@ -24,6 +29,7 @@ phpfpm_packages_gentoouse:
   - readline
   - session
   - curl
+  - bcmath
   # Multibytes strings
   - unicode
   - mcrypt
@@ -34,6 +40,7 @@ phpfpm_packages_gentoouse:
   - mysqli
   - pdo
   - sqlite
+  - ldap
   # Format input output
   - json
   - xml
@@ -49,18 +56,14 @@ phpfpm_packages_gentoouse:
 
 phpfpm_packages_extra:
 #  - php-smbclient
-#  - php-phalcon3
-  - php-phpiredis
-  - php-pecl-uuid
-  - php-pecl-ssh2
-#  - php-pecl-scrypt
-#  - php-pecl-protobuf
-#  - php-pecl-pdflib
+  - dev-php/phalcon
+  - dev-php/pecl-redis
+#  - dev-php/pecl-uuid
+  - dev-php/pecl-ssh2
+#  - dev-php/tcpdf
 #  - php-pecl-libsodium2
 #  - php-pecl-inotify
-#  - php-pecl-gnupg
-  - php-pecl-geoip
+#  - dev-php/pecl-gnupg
+  - dev-php/pecl-geoip
 #  - php-lz4
-  - php-ldap
-  - php-bcmath
 

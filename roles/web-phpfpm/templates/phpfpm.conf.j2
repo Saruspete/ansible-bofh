@@ -16,7 +16,7 @@ include = {{ http_data_dir }}/*/conf/phpfpm.conf
 ;;;;;;;;;;;;;;;;;;
 
 [global]
-pid = /run/php-fpm/php-fpm.pid
+pid = {{ phpfpm_run_file }}
 
 error_log = /var/log/php-fpm/error.log
 

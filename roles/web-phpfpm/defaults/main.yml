@@ -4,3 +4,9 @@ http_data_dir: "/home/www"
 http_data_user:   "nginx"
 http_data_group:  "nginx"
 
+
+phpfpm_conf_base: /etc
+phpfpm_conf_file_main: "{{ phpfpm_conf_base }}/php-fpm.conf"
+
+phpfpm_run_file: /run/php-fpm/php-fpm.pid
+

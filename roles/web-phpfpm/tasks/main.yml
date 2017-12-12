@@ -38,12 +38,22 @@
         'logs/phpfpm',
         'temp/phpfpm' ]
 
+- name: Folders - Create main logs
+  tags: ['folders']
+  file:
+    path: /var/log/php-fpm
+    state: directory
+    mode: 0750
+    owner: "{{ http_data_user }}"
+    group: "{{ http_data_group }}"
+
+
 #
 # Configure FPM
 #
 - name: Config - phpfpm.conf
   tags: ['config']
-  template: src={{ item }} dest=/etc/php-fpm.conf
+  template: src={{ item }} dest={{ phpfpm_conf_file_main }}
   with_first_found:
   - files:
     - phpfpm.conf.{{ inventory_hostname }}.j2

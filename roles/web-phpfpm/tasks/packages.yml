@@ -43,7 +43,7 @@
 #
 - name: Config - phpfpm.conf
   tags: ['config']
-  template: src={{ item }} dest=/etc/php-fpm.conf
+  template: src={{ item }} dest={{ phpfpm_conf_file_main }}
   with_first_found:
   - files:
     - phpfpm.conf.{{ inventory_hostname }}.j2
