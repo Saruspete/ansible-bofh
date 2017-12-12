@@ -1,0 +1,12 @@
+---
+
+# Request certificate using http
+- name: API - Request certificate with HTTP
+  command: "{{ letsencrypt_command }} -a webroot --webroot-path {{ letsencrypt_webroot_path }} certonly"
+  become: yes
+  args:
+    creates: "/etc/letsencrypt/live/{{ letsencrypt_cert_domains[0] }}"
+  when: letsencrypt_authenticator == "webroot"
+  ignore_errors: True
+
+

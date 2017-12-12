@@ -1,0 +1,17 @@
+---
+
+# Install required packages
+- name: Package - Install Certbot
+  package: name={{item}} state=present
+  with_items: "{{letsencrypt_packages}}"
+  become: yes
+  tags: ['package']
+
+# Configure crontab
+- name: Cron - Certbot renewal
+  cron:
+    name: Certbot renewal
+    minute: 10
+    hour: 8
+    user: root
+    job: "{{letsencrypt_bin}} --quiet renew >> /var/log/letsencrypt/renewal.log 2>&1"

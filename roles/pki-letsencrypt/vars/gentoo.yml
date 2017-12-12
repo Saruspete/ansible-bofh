@@ -1,5 +1,25 @@
 ---
 
-letsencrypt_packages: "app-crypt/certbot-nginx"
+letsencrypt_packages: 
+  - "app-crypt/certbot"
+  - "app-crypt/certbot-nginx"
 
 openssl_packages: "openssl"
+
+
+letsencrypt_bin: "/usr/bin/certbot"
+
+letsencrypt_cert_domains:
+  - "{{ ansible_fqdn }}"
+
+letsencrypt_authenticator: webroot
+
+letsencrypt_email: "webmaster@{{ letsencrypt_cert_domains[0] }}"
+
+letsencrypt_command: "{{ letsencrypt_bin }} -n --agree-tos
+  {% if letsencrypt_rsa_key_size is defined %}--rsa-key-size {{ letsencrypt_rsa_key_size }}{% endif %}
+  --text {% for domain in letsencrypt_cert_domains %}-d {{ domain }} {% endfor %}
+  {% if letsencrypt_no_email is defined %}--register-unsafely-without-email{% else %}--email {{ letsencrypt_email }}{% endif %}
+  {% if letsencrypt_server is defined %}--server {{ letsencrypt_server }}{% endif %}
+  --expand"
+
