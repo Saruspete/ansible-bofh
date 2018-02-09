@@ -1,0 +1,5 @@
+---
+
+- name: Package - Install __TEMPLATE__
+  package: name={{ item }} state=installed
+  with_items: "{{ __TEMPLATE__pkg_list }}"

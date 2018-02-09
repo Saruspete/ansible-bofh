@@ -1,25 +1,20 @@
 ---
 
-### BLOCK INCLUDE START
-- set_fact:                                                             
-    ansible_distro: "{{ ansible_distribution|lower|replace('\"', '') }}"
+#
+# Load vars depending on OS and so on...
+#
+- name: Ansible - include task init.yml
+  include: init.yml
+  static: true
 
-- include_vars: "{{ item }}"
-  with_first_found:
-    - files:                                                                    
-      - "{{ ansible_distro }}-{{ ansible_distribution_version|lower|replace('/', '_') }}.yml"
-      - "{{ ansible_distro }}-{{ ansible_distribution_release }}.yml"           
-      - "{{ ansible_distro }}-{{ ansible_distribution_major_version|lower|replace('/', '_') }}.yml"
-      - "{{ ansible_distro }}.yml"                                              
-      - "{{ ansible_distribution }}-{{ ansible_distribution_major_version | int}}.yml"
-      - "{{ ansible_distribution }}.yml"                                        
-      - "{{ ansible_os_family }}.yml"                                           
-      - "{{ ansible_os_family|lower }}.yml"                                     
-      - "default.yml"                                                           
-    - paths:                                                                    
-      - ../vars                                                                 
+#
+# Packages
+#
+- name: Ansible - include task package.yml
+  include: package.yml
+  static: true
 
-- name: Ansible - Call OS-specific tasks
-  include: {{ ansible_os_family }}.yml
 
-### BLOCK INCLUDE END
+#
+# Configuration start here
+#
