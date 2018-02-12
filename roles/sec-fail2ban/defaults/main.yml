@@ -1,9 +1,11 @@
 ---
 
+f2b_cfg_dir:  "/etc/fail2ban"
 f2b_log_file: "/var/log/fail2ban.log"
-f2b_jail_file: "/etc/fail2ban/jail.local"
-f2b_jail_dir: "/etc/fail2ban/jail.d"
-f2b_filter_dir: "/etc/fail2ban/filter.d"
+f2b_jail_file: "{{ f2b_cfg_dir }}/jail.local"
+f2b_jail_dir: "{{ f2b_cfg_dir}}/jail.d"
+f2b_filter_dir: "{{ f2b_cfg_dir }}/filter.d"
+f2b_action_dir: "{{ f2b_cfg_dir}}/action.d"
 
 f2b_pkg_list:
   - fail2ban
