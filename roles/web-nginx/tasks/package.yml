@@ -1,0 +1,11 @@
+---
+
+- name: Package - PreInstall nginx
+  package: name={{ item }} state=installed
+  with_items: "{{ nginx_packages_pre }}"
+  tags: ['package']
+
+- name: Package - Install nginx
+  package: name={{ item }} state=installed
+  with_items: "{{ nginx_packages }}"
+  tags: ['package']

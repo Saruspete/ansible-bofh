@@ -1,0 +1,7 @@
+---
+nginx_packages_pre:
+  - gentoolkit
+
+nginx_packages:
+  - nginx
+  - apache-tools

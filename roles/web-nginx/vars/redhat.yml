@@ -1,0 +1,9 @@
+---
+
+nginx_packages_pre:
+  - epel-release
+  - libselinux-python
+
+nginx_packages: 
+  - nginx
+  - httpd-tools

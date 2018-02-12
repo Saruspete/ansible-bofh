@@ -1,21 +1,20 @@
 ---
 
 #
-# Configure system
+# Load vars depending on OS and so on...
 #
 
-- block:
-    - name: Package - Install EPEL
-      package: name=epel-release state=present
-    - name: Package - Install selinux-python
-      package: name=libselinux-python state=present
-  when: ansible_os_family == "RedHat"
-  tags: ['package']
+- name: Ansible - Include task init.yml
+  include: init.yml
+  static: true
 
-# Install packages
-- name: Package - Install nginx
-  package: name=nginx state=present
-  tags: ['package']
+#
+# Install Packages
+#
+- name: Ansible - include task package.yml
+  include: package.yml
+  static: true
+
 
 # Fix user
 #- name: Accounts - nginx
