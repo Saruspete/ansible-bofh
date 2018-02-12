@@ -1,5 +1,11 @@
 ---
 
+- name: Package - PreInstall __TEMPLATE__
+  package: name={{ item }} state=installed
+  with_items: "{{ __TEMPLATE___packages_pre }}"
+  tags: ['package']
+
 - name: Package - Install __TEMPLATE__
   package: name={{ item }} state=installed
-  with_items: "{{ __TEMPLATE__pkg_list }}"
+  with_items: "{{ __TEMPLATE___packages }}"
+  tags: ['package']
