@@ -29,6 +29,6 @@ rsync -a "$SRCDIR/" "$DSTDIR"
 # Sed the templates
 typeset tplreplace="${ROLENAME#*-}"
 typeset tplsearch="__TEMPLATE__"
-grep -r "$tplsearch" -l | xargs sed -e "s/$tplsearch/$tplreplace/g" -i
+grep -r "$tplsearch" -l $DSTDIR | xargs sed -e "s/$tplsearch/$tplreplace/g" -i
 
 
