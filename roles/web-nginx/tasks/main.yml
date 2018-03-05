@@ -65,9 +65,9 @@
     owner: "{{ http_data_user }}"
     group: "{{ http_data_group }}"
 
-#- name: Folders - Create default virtalhost
-#  file: path={{ http_data_dir }}/default state=directory
-#  tags: ['folders']
+- name: Folders - Create default virtalhost
+  file: path={{ http_data_dir }}/default state=directory
+  tags: ['folders']
 
 - name: Folders - Find all virtualhosts
   find:
@@ -120,10 +120,20 @@
       - "{{ domain.path | webfolder2domain }}"
   with_items:
     "{{ vhosts.files }}"
-  when: domain != "default"
+  when: domain.path | basename != "default"
   loop_control:
     loop_var: domain
   tags: ['crypto']
+
+# TODO: Find a DNS reflector, as LE doesn't allow certs for IPs
+- name: Crypto - Request Default Certificate
+  include_role: name=pki-letsencrypt
+  vars:
+    letsencrypt_webroot_path: "{{ http_data_dir }}/default/html/public"
+    letsencrypt_cert_domains:
+      - "{{ ansible_default_ipv4.address | regex_replace('\\.', '-') + '.rev.ciarapelab.com' }}"
+  tags: ['crypto']
+  when: 0 == 1
 
 - name: Crypto - List letsencrypt certificates
   find:

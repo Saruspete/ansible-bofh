@@ -2,9 +2,12 @@
 {% set domain_current = item.path | webfolder2domain %}
 {% set domain_hashttps = '1' if item.path in domains_certificates else '0' %}
 server {
+{% if domain_current == "default" %}
+	listen              0.0.0.0:80 default_server;
+{% else %}
 	listen              0.0.0.0:80;
 	server_name         {{ domain_current }};
-
+{% endif %}
 	#
 	# Log management
 	#
@@ -24,8 +27,12 @@ server {
 
 {% if domain_hashttps | bool %}
 server {
-	listen              0.0.0.0:443 ssl;
+{% if domain_current == "default" %}
+	listen              0.0.0.0:443 default_server ssl;
+{% else %}
+	listen				0.0.0.0:443 ssl;
 	server_name         {{ domain_current }};
+{% endif %}
 
 	#
 	# SSL Configuration

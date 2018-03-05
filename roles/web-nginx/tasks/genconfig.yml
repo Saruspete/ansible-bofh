@@ -10,6 +10,7 @@
 - set_fact:
     domains_certificates: []
   tags: ['always']
+
 - name: Ansible - Set list of valid certificates
   set_fact:
     domains_certificates: "{{ domains_certificates }} + [ '{{ item.item.path }}' ]"
