@@ -18,7 +18,15 @@ server {
 	# Common configuration
 	#
 {% if domain_hashttps | bool and domain_current not in http_domain_allowhttp %}
-	return              301 https://$host$request_uri;
+
+	# Allow .well-known/acme-challenge for LetsEncrypt renewal (to avoid proxy)
+	location /.well-known/acme-challenge/ {
+		root                {{ item.path }}/html/public;
+	}
+	# All other URL, redirect on https
+	location / {
+		return              301 https://$host$request_uri;
+	}
 {% else %}
 	include             {{ item.path }}/conf/nginx.common.conf;
 {% endif %}
