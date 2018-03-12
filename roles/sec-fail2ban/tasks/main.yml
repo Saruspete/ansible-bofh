@@ -23,8 +23,11 @@
 - name: Config - Jail retry 5 times
   ini_file: path={{ f2b_jail_file }} section=DEFAULT option=maxretry value=5
 
-- name: Config - Enable SSH Monitoring
-  ini_file: path={{ f2b_jail_file }} section=sshd option=enabled value=true
+#- name: Config - Enable SSH Monitoring
+#  ini_file: path={{ f2b_jail_file }} section=sshd option=enabled value=true
+
+- name: Config - Enable PAM-Generic Monitoring
+  ini_file: path={{ f2b_jail_file }} section=pam-generic option=enabled value=true
 
 - name: Config - Remove firewallcmd to fallback to iptables
   file:
