@@ -93,7 +93,7 @@
         'html', 'html/public', 
         'logs', 'logs/nginx',
         'priv',
-        'temp', 'temp/temp', 'temp/nginx', 'temp/upload', 'temp/session' ]
+        'temp', 'temp/temp', 'temp/nginx', 'temp/nginx/client_body' 'temp/upload', 'temp/session' ]
   tags: ['folders']
 
 
