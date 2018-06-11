@@ -12,6 +12,7 @@
 - name: Package - Install extra modules
   package: name={{ item }} state=present
   with_items: "{{ phpfpm_packages_extra }}"
+  ignore_errors: yes
 
 
 - name: Folders - Find all virtualhosts
