@@ -10,7 +10,7 @@
 - name: Package - Install packages
   include: package.yml
   static: true
-  when: " done_pki_letsencrypt_packages|default(0) < 1"
+  when: " done_pki_letsencrypt_packages|default(0)|int < 1"
 
 - set_fact: done_pki_letsencrypt_packages=1
 
