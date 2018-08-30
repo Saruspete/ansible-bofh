@@ -24,6 +24,11 @@ location ~ /\.ht {
 	deny all;
 }
 
+# If your application is not compatible with IE <= 10, this will redirect visitors to a page advising a browser update
+# This works because IE 11 does not present itself as MSIE anymore
+#if ($http_user_agent ~ "MSIE" ) {
+#	return 303 https://browser-update.org/update.html;
+#}
 
 #
 # Configuration to be used in nginx/ include folder
